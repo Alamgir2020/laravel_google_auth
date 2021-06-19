@@ -47,7 +47,7 @@ class GoogleController extends Controller
                 $newUser->email = $user->email;
                 $newUser->google_id = $user->id;
                 // $newUser->password = encrypt('123456dummy');
-                $newUser->password = uniqid();
+                $newUser->password = encrypt(uniqid());
 
                 $newUser->save();
 
