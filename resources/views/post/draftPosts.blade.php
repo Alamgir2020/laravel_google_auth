@@ -1,77 +1,62 @@
 @extends('layouts.app')
+@section('title')
+    Draft Posts
+@endsection
 
 @section('content')
+
     <div class="container">
-
         @include('partials.heading')
-        <div class="bg-info text-capitalize text-white text-center p-2">
+        <div class="bg-info p-1 text-center">
             <h4 class="my-3 text-white">
-                Posts of
-                <span class="text-dark">
-
-                    {{ Auth::user()->name }}
-                </span>
-
+                LIST OF All The Draft Posts of {{ Auth::user()->name }}
             </h4>
         </div>
-        <div class="form-inline my-3 bg-warning p-2">
-            <i class="fas fa-search text-white mr-2"></i>
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for your own posts"
-                class="form-control">
+        <div class="input-container my-3 bg-warning p-2 form-inline">
+            <i class="fas fa-search mr-2 text-white"></i>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search Post Titles" class="form-control">
         </div>
 
         <ul class="list-group" id="myUL">
 
-            @foreach ($posts as $key => $post)
-                <li class="list-group-item my-2">
+            @foreach ($draftPosts as $key => $post)
+
+                <li class="list-group-item">
+
                     <h3>
-
                         {{ $key + 1 }}.
-
-                        <a href="{{ route('post.show', $post->slug) }}">
-
-                            {{ $post->title }}
-                        </a>
-
+                        <a href="{{ route('post.show', $post->slug) }}"><span
+                                class="mr-2">&#9883;</span>{{ $post->title }}</a>
                     </h3>
                     <p>
-                        Categories:
-                        @foreach ($post->categories as $category)
-                        <a href="{{ route('categoryWisePostsList', $category->slug) }}" class="badge-info badge-pill mr-2">
-                                {{ $category->name }}
+                        Written by:
+                        <a href="{{ route('userWisePosts', $post->user->id) }}">
+                            <span class="badge badge-info">
+                                {{ $post->user->name }}
+                            </span>
+                        </a>
 
-                            </a>
-                        @endforeach
                     </p>
                     <p>
                         Created at: {{ $post->created_at->format('M d,Y \a\t h:i a') }}
                     </p>
 
-                    @if ($post->active === 0)
-
-                        <p class="bg-warning">
-                            Publication Status : Draft
-                        </p>
-                    @else
-                        <p class="bg-success">
-                            Publication Status : Published
-                        </p>
-                    @endif
-
                     <p>
                         <a href="{{ route('post.edit', $post->id) }}" class="btn btn-sm btn-success float-right mx-2"><i
                                 class="fas fa-edit mr-2"></i>Edit</a>
-                        {{-- <a href="{{ route('post.dest', $post->id) }}" class="btn btn-sm btn-danger float-right"><i class="fas fa-trash-alt mr-2"></i>Delete</a> --}}
 
                         <a href="#" class="float-right mx-2 btn btn-sm btn-danger"
                             onclick="handleDelete({{ $post->id }})"><i class="far fa-trash-alt mr-1"></i>Delete</a>
-                        </>
+                    </p>
+
                 </li>
             @endforeach
         </ul>
     </div>
 
 
+
+    {{-- //modal starts --}}
 
     <div class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -101,13 +86,18 @@
         </div>
     </div>
 
+    {{-- //modal ends --}}
+
+
+
+
+
+
 
 @endsection
 
-
-
 @push('js')
-
+    <script src="{{ asset('js/myApp.js') }}" defer></script>
 
     <script>
         function handleDelete(id) {

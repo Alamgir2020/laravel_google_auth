@@ -3,11 +3,19 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">{{ __('Login') }}</div>
+            <div class="col-md-12">
+                <div class="card mt-2">
+                    <div class="card-header bg-primary text-white">{{ __('Login') }}
 
-                    <div class="card-body">
+                        <p class="mt-4 ">
+                            <a href="{{ route('register') }}" class="btn btn-warning btn-sm">Do not have an account? CLICK
+                                ME.</a>
+
+                        </p>
+                    </div>
+
+                    <div class="card-body bg-dark text-white">
+
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
 
@@ -68,10 +76,16 @@
                                             {{ __('Forgot Your Password?') }}
                                         </a>
                                     @endif
-                                    <a href="{{ url('auth/google') }}" style="margin-top: 20px;"
-                                        class="btn btn-lg btn-success btn-block">
-                                        <strong>Login With Google</strong>
-                                    </a>
+
+                                    <div>
+
+                                        <a href="{{ url('auth/google') }}" style="margin-top: 20px;"
+                                            class="btn btn-lg btn-light btn-block text-danger">
+                                            <strong><i class="fab fa-google mr-3"></i>Login With Google</strong>
+                                        </a>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </form>

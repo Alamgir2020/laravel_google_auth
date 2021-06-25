@@ -1,76 +1,67 @@
 @extends('layouts.app')
+@section('title')
+    userWisePostList
+@endsection
 
 @section('content')
+
     <div class="container">
 
         @include('partials.heading')
-        <div class="bg-info text-capitalize text-white text-center p-2">
-            <h4 class="my-3 text-white">
-                Posts of
-                <span class="text-dark">
 
-                    {{ Auth::user()->name }}
-                </span>
+        <div class="bg-info text-white text-center p-2">
+            <h3 class="my-3">
+                LIST OF ALL THE POSTS OF <span class="text-white">{{ $user->name }}</span>
+                <span class="badge badge-pill badge-primary"> {{ $user->posts->count() }} Posts</span>
+            </h3>
 
+            <h4>
+                <a href="{{ route('showProfile', $user->id) }}" class="btn btn-warning">
+                    Learn About {{ $user->name }}
+                </a>
             </h4>
         </div>
-        <div class="form-inline my-3 bg-warning p-2">
+        <div class="my-2 bg-warning p-2 form-inline">
             <i class="fas fa-search text-white mr-2"></i>
-            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for your own posts"
-                class="form-control">
+            <input type="text" id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search in title">
         </div>
-
         <ul class="list-group" id="myUL">
-
             @foreach ($posts as $key => $post)
-                <li class="list-group-item my-2">
+                <li class="list-group-item">
                     <h3>
-
                         {{ $key + 1 }}.
-
-                        <a href="{{ route('post.show', $post->slug) }}">
-
-                            {{ $post->title }}
+                        <a href="{{ route('post.show', $post->slug) }}" class>
+                            <i class="fa fa-book mr-1" aria-hidden="true"></i>{{ $post->title }}{{ $post->id }}
                         </a>
-
                     </h3>
                     <p>
-                        Categories:
-                        @foreach ($post->categories as $category)
-                        <a href="{{ route('categoryWisePostsList', $category->slug) }}" class="badge-info badge-pill mr-2">
-                                {{ $category->name }}
+                        Written by:
+                        <a href="{{ route('userWisePosts', $post->user->id) }}">
+                            <span class="badge badge-info">
+                                {{ $post->user->name }}
+                            </span>
+                        </a>
 
-                            </a>
-                        @endforeach
+                        {{-- {{ $tableOfContents->user->name }} --}}
                     </p>
                     <p>
                         Created at: {{ $post->created_at->format('M d,Y \a\t h:i a') }}
                     </p>
-
-                    @if ($post->active === 0)
-
-                        <p class="bg-warning">
-                            Publication Status : Draft
-                        </p>
-                    @else
-                        <p class="bg-success">
-                            Publication Status : Published
-                        </p>
-                    @endif
-
                     <p>
-                        <a href="{{ route('post.edit', $post->id) }}" class="btn btn-sm btn-success float-right mx-2"><i
-                                class="fas fa-edit mr-2"></i>Edit</a>
-                        {{-- <a href="{{ route('post.dest', $post->id) }}" class="btn btn-sm btn-danger float-right"><i class="fas fa-trash-alt mr-2"></i>Delete</a> --}}
+                        @auth
+                            @if ($post->user_id == Auth::user()->id || Auth::user()->is_admin())
+                                <a href="{{ route('post.edit', $post->id) }}"
+                                    class="float-right mx-2 btn btn-sm btn-warning">Edit</a>
 
-                        <a href="#" class="float-right mx-2 btn btn-sm btn-danger"
-                            onclick="handleDelete({{ $post->id }})"><i class="far fa-trash-alt mr-1"></i>Delete</a>
-                        </>
+                                <a href="#" class="float-right mx-2 btn btn-sm btn-danger"
+                                    onclick="handleDelete({{ $post->id }})"><i class="far fa-trash-alt mr-1"></i>Delete</a>
+                            @endif
+                        @endauth
+                    </p>
                 </li>
             @endforeach
         </ul>
     </div>
-
 
 
     <div class="modal" tabindex="-1" role="dialog">
@@ -104,10 +95,7 @@
 
 @endsection
 
-
-
 @push('js')
-
 
     <script>
         function handleDelete(id) {
